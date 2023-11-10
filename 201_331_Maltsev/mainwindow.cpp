@@ -21,7 +21,7 @@
 #include "QCryptographicHash"
 
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
@@ -36,15 +36,15 @@ MainWindow::~MainWindow()
 void MainWindow::show_pin_check_window() {
 
     pin_window = new QWidget(); //Создание виджета как окна для ввода пин кода
-    pin_window->setGeometry(683,350,270,120);
+    pin_window->setGeometry(683, 350, 270, 120);
 
-    QVBoxLayout *layout_pin = new QVBoxLayout;
+    QVBoxLayout* layout_pin = new QVBoxLayout;
 
-    QLabel *pin_code_label = new QLabel("Пин код"); //Лейбл для пинкода
+    QLabel* pin_code_label = new QLabel("Пин код"); //Лейбл для пинкода
     input_pincode = new QLineEdit(); // Инпут для пинкода
     input_pincode->setEchoMode(QLineEdit::Password);
 
-    QPushButton *check_pin_btn = new QPushButton("Вход"); //Кнопка для проверки
+    QPushButton* check_pin_btn = new QPushButton("Вход"); //Кнопка для проверки
     connect(check_pin_btn, SIGNAL(clicked()), this, SLOT(check_pin_code())); //При нажатии на кнопку отправляемся в функцию проверки
 
     //Добавляем в окно лейбл кнопку и инпут
@@ -54,4 +54,76 @@ void MainWindow::show_pin_check_window() {
     pin_window->setLayout(layout_pin);
 
     pin_window->show();
+}
+
+int MainWindow::check_pin_code() {
+    const QString orig_code = "1234";
+    QString code = input_pincode->text();
+
+    if (orig_code == code) {
+        delete[] pin_window;
+        this->show_game_window(); //запускаем основное окно
+        this->show();
+        return 0;
+
+    }
+    else {
+        QMessageBox::critical(NULL, QObject::tr("Ошибка"), tr("Ошибка ввода пин-кода"));
+        return 0;
+    }
+}
+
+
+int MainWindow::show_game_window() {
+
+
+    readJsonFile("D:/201_331_Maltsev/201_331_Maltsev/hero.json");
+    add_to_window(current_card);
+
+    //    // Вывод данных
+    //    for (const QVector<QString> &heroData : hero_info) {
+    //        for (const QString &info : heroData) {
+    //            qDebug() << info;
+    //        }
+    //        qDebug() << "------------";
+    //    }
+    return 0;
+}
+
+
+int MainWindow::readJsonFile(const QString& filename) {
+    // Открытие файла
+    QFile file(filename);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qDebug() << "Ошибка при открытии файла";
+        return 0;
+    }
+
+    // Чтение JSON из файла
+    QByteArray jsonData = file.readAll();
+    file.close();
+
+    QJsonDocument doc = QJsonDocument::fromJson(jsonData);
+
+    // Проверка на корректность JSON
+    if (!doc.isObject()) {
+        qDebug() << "Ошибка в структуре JSON";
+        return 0;
+    }
+
+    QJsonObject json = doc.object();
+
+    // Итерация по каждому герою в JSON
+    for (const QString& heroName : json.keys()) {
+        QJsonObject hero = json[heroName].toObject();
+
+        QVector<QString> heroData;
+        heroData.push_back(hero["Weapon_Type"].toString());
+        heroData.push_back(QString::number(hero["Health_Points"].toInt()));
+        heroData.push_back(QString::number(hero["View_Range"].toDouble()));
+        heroData.push_back(hero["hash"].toString());
+        hero_info.push_back(heroData);
+    }
+
+    return 0;
 }
