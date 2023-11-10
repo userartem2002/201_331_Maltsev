@@ -21,7 +21,7 @@
 #include "QCryptographicHash"
 
 
-MainWindow::MainWindow(QWidget* parent)
+MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
@@ -36,15 +36,15 @@ MainWindow::~MainWindow()
 void MainWindow::show_pin_check_window() {
 
     pin_window = new QWidget(); //Создание виджета как окна для ввода пин кода
-    pin_window->setGeometry(683, 350, 270, 120);
+    pin_window->setGeometry(683,350,270,120);
 
-    QVBoxLayout* layout_pin = new QVBoxLayout;
+    QVBoxLayout *layout_pin = new QVBoxLayout;
 
-    QLabel* pin_code_label = new QLabel("Пин код"); //Лейбл для пинкода
+    QLabel *pin_code_label = new QLabel("Пин код"); //Лейбл для пинкода
     input_pincode = new QLineEdit(); // Инпут для пинкода
     input_pincode->setEchoMode(QLineEdit::Password);
 
-    QPushButton* check_pin_btn = new QPushButton("Вход"); //Кнопка для проверки
+    QPushButton *check_pin_btn = new QPushButton("Вход"); //Кнопка для проверки
     connect(check_pin_btn, SIGNAL(clicked()), this, SLOT(check_pin_code())); //При нажатии на кнопку отправляемся в функцию проверки
 
     //Добавляем в окно лейбл кнопку и инпут
@@ -68,30 +68,22 @@ int MainWindow::check_pin_code() {
 
     }
     else {
-        QMessageBox::critical(NULL, QObject::tr("Ошибка"), tr("Ошибка ввода пин-кода"));
+        QMessageBox::critical(NULL,QObject::tr("Ошибка"),tr("Ошибка ввода пин-кода"));
         return 0;
     }
 }
 
 
 int MainWindow::show_game_window() {
-
-
+    //Считываем данные с файла
     readJsonFile("D:/201_331_Maltsev/201_331_Maltsev/hero.json");
+    //Заполняем карточку персонажей
     add_to_window(current_card);
-
-    //    // Вывод данных
-    //    for (const QVector<QString> &heroData : hero_info) {
-    //        for (const QString &info : heroData) {
-    //            qDebug() << info;
-    //        }
-    //        qDebug() << "------------";
-    //    }
     return 0;
 }
 
 
-int MainWindow::readJsonFile(const QString& filename) {
+int MainWindow::readJsonFile(const QString &filename) {
     // Открытие файла
     QFile file(filename);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -114,14 +106,15 @@ int MainWindow::readJsonFile(const QString& filename) {
     QJsonObject json = doc.object();
 
     // Итерация по каждому герою в JSON
-    for (const QString& heroName : json.keys()) {
+    for (const QString &heroName : json.keys()) {
         QJsonObject hero = json[heroName].toObject();
-
+        //Добавление атрибутов персонажа в временный вектор
         QVector<QString> heroData;
         heroData.push_back(hero["Weapon_Type"].toString());
         heroData.push_back(QString::number(hero["Health_Points"].toInt()));
         heroData.push_back(QString::number(hero["View_Range"].toDouble()));
         heroData.push_back(hero["hash"].toString());
+        //Добавление персонажа в лист персонажей
         hero_info.push_back(heroData);
     }
 
@@ -130,29 +123,29 @@ int MainWindow::readJsonFile(const QString& filename) {
 
 int MainWindow::add_to_window(int current_card) {
 
+    //Отрисовка атрибутов персонажа
     ui->lineGun->setText(hero_info[current_card][0]);
     ui->lineHealth->setText(hero_info[current_card][1]);
     ui->lineObsor->setText(hero_info[current_card][2]);
 
+    //Создаем строчку из атрибутов персонажей и соли чтобы захешировать её
     QString str_for_hash = hero_info[current_card][0] + hero_info[current_card][1] + hero_info[current_card][2] + salt;
 
+    //Вычисление хэша
     QByteArray pin_hash_code_current = QCryptographicHash::hash(QByteArray(str_for_hash.toUtf8()), QCryptographicHash::Sha256).toHex(); // Хэшируем по Sha256
 
+    //Сравнивание хэша
     if (pin_hash_code_current != hero_info[current_card][3].toUtf8()) {
-        QMessageBox::critical(NULL, QObject::tr("Ошибка"), tr("Код изменен!!!"));
+        QMessageBox::critical(NULL,QObject::tr("Ошибка"),tr("Код изменен!!!"));
         QCoreApplication::quit();
         return 0;
     }
     return 0;
 }
 
-//int check_sha() {
-
-//}
-
 void MainWindow::on_pushButton_next_clicked()
 {
-    current_card += 1;
+    current_card+= 1;
     if (current_card == 3) {
         current_card = 0;
     }
@@ -166,7 +159,7 @@ void MainWindow::on_pushButton_next_clicked()
 void MainWindow::on_pushButton_back_clicked()
 {
 
-    current_card -= 1;
+    current_card-= 1;
     if (current_card == -1) {
         current_card = 2;
     }
