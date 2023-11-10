@@ -2,10 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "QSignalMapper"
-#include "QListWidgetItem"
-#include "QVBoxLayout"
-#include "QPushButton"
 #include "QMessageBox"
 #include "QLabel"
 #include "QLineEdit"
@@ -27,18 +23,18 @@ public:
     QWidget *pin_window;
     QLineEdit *input_pincode;
     void show_pin_check_window();//Функция показа окна для ввода pincode
-    QVector<QVector<QString>> hero_info;
-    int readJsonFile(const QString &filename);
-    QString salt = "12345";
+    QVector<QVector<QString>> hero_info; //Вектор, который хранит данные о персонажей
+    int readJsonFile(const QString &filename);//Функция считывания файла
+    QString salt = "12345"; //Соль
 
-    int show_game_window();
-    int add_to_window(int current_card);
-    int current_card = 0;
+    int show_game_window();//Отображение основного аккаунта
+    int add_to_window(int current_card);//Функция добавление данные в окно
+    int current_card = 0;//переменная которая отвечает за номер карточки
 private slots:
-    int check_pin_code();
-    void on_pushButton_next_clicked();
+    void on_pushButton_next_clicked();//Сигнал на кнопку вперед
+    void on_pushButton_back_clicked();//Сигнал на кнопку назад
+    int check_pin_code();//Функция проверки пинкода
 
-    void on_pushButton_back_clicked();
 
 private:
     Ui::MainWindow *ui;
