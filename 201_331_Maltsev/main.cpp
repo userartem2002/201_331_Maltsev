@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
     // Сравнение хэша
 
     qDebug() << current_hash_base64;
-    const QByteArray ref_hash_base64 = QByteArray("dDvBOXvS1XjVgpdJnpWc54PgNewdIEvOfMW/TCj+tjs=");
+    const QByteArray ref_hash_base64 = QByteArray("0U03147Tbu7sXEadAsw2LPKhlLb6oHQoaDcvEMxoi3I=");
     bool result_checksum = (current_hash_base64==ref_hash_base64);
 
     //Проверка на отладку
