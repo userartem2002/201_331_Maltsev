@@ -1,0 +1,21 @@
+{
+  "hero1": {
+    "Weapon_Type": "gun",
+    "Health_Points": 80,
+    "View_Range": 12.6,
+    "hash": "2a1b31e07d6dbd24b959271bf324914d54ab7e09de76ba087ab2a4af45741a5e"
+
+  },
+  "hero2": {
+    "Weapon_Type": "uzi",
+    "Health_Points": 84,
+    "View_Range": 1.2,
+    "hash": "36888b7631eb676f307a1fec7fc11065b8bce5a0e0dd9669bd37ea696cd73dc8"
+  },
+  "hero3": {
+    "Weapon_Type": "m16",
+    "Health_Points": 54,
+    "View_Range": 8.1,
+    "hash": "468206394bf8c6bde83955f90c2eb267b27057cc24e8c917ba6754923e5b302d"
+  }
+}
