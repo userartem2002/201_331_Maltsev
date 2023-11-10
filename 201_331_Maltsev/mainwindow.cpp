@@ -127,3 +127,51 @@ int MainWindow::readJsonFile(const QString& filename) {
 
     return 0;
 }
+
+int MainWindow::add_to_window(int current_card) {
+
+    ui->lineGun->setText(hero_info[current_card][0]);
+    ui->lineHealth->setText(hero_info[current_card][1]);
+    ui->lineObsor->setText(hero_info[current_card][2]);
+
+    QString str_for_hash = hero_info[current_card][0] + hero_info[current_card][1] + hero_info[current_card][2] + salt;
+
+    QByteArray pin_hash_code_current = QCryptographicHash::hash(QByteArray(str_for_hash.toUtf8()), QCryptographicHash::Sha256).toHex(); // Хэшируем по Sha256
+
+    if (pin_hash_code_current != hero_info[current_card][3].toUtf8()) {
+        QMessageBox::critical(NULL, QObject::tr("Ошибка"), tr("Код изменен!!!"));
+        QCoreApplication::quit();
+        return 0;
+    }
+    return 0;
+}
+
+//int check_sha() {
+
+//}
+
+void MainWindow::on_pushButton_next_clicked()
+{
+    current_card += 1;
+    if (current_card == 3) {
+        current_card = 0;
+    }
+
+    qDebug() << "current_card" << current_card;
+    add_to_window(current_card);
+
+}
+
+
+void MainWindow::on_pushButton_back_clicked()
+{
+
+    current_card -= 1;
+    if (current_card == -1) {
+        current_card = 2;
+    }
+    qDebug() << "current_card" << current_card;
+
+    add_to_window(current_card);
+}
+
